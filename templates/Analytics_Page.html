@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            min-height: 100vh;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+
+        .dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .card {
+            background: rgba(240, 240, 240, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            color: #2d2d2d;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #e0e0e0, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .progress-section {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .progress-circle {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .progress-ring {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .progress-ring__background {
+            fill: transparent;
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 8;
+        }
+
+        .progress-ring__progress {
+            fill: transparent;
+            stroke: #0047AB;
+            stroke-width: 8;
+            stroke-linecap: round;
+            stroke-dasharray: 314;
+            stroke-dashoffset: 314;
+            animation: progress-animation 2s ease-out forwards;
+        }
+
+        @keyframes progress-animation {
+            to {
+                stroke-dashoffset: var(--progress-offset);
+            }
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .score-info {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2d2d2d;
+            margin-bottom: 5px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(45deg, #2d2d2d, #404040);
+            color: #f0f0f0;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin: 20px 0;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .badge-icon {
+            width: 30px;
+            height: 30px;
+            background: rgba(240, 240, 240, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .streak-section {
+            text-align: center;
+        }
+
+        .streak-number {
+            font-size: 4rem;
+            font-weight: bold;
+            color: #2d2d2d;
+            text-shadow: 0 0 20px rgba(224, 224, 224, 0.2);
+            margin-bottom: 10px;
+        }
+
+        .streak-label {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .download-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(45deg, #2d2d2d, #404040);
+            color: #f0f0f0;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .fire-emoji {
+            font-size: 1.5em;
+            animation: flicker 1.5s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% { opacity: 1; }
+            100% { opacity: 0.7; }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .progress-section {
+                flex-direction: column;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>📊 Analytics Dashboard</h1>
+            <p>Track your progress and achievements</p>
+        </div>
+
+        <!-- Progress & Score Section -->
+        <div class="card">
+            <h2 style="text-align: center; margin-bottom: 30px;">Badge Progress</h2>
+            <div class="progress-section">
+                <div>
+                    <div class="progress-circle">
+                        <svg class="progress-ring" viewBox="0 0 120 120">
+                            <circle class="progress-ring__background" cx="60" cy="60" r="50"></circle>
+                            <circle class="progress-ring__progress" cx="60" cy="60" r="50" id="progressCircle"></circle>
+                        </svg>
+                        <div class="progress-text">
+                            <div id="progressPercent">85%</div>
+                        </div>
+                    </div>
+                    <div class="score-info">
+                        <div class="score-value" id="scoreValue">850</div>
+                        <div>Total Score</div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="badge">
+                        <div class="badge-icon"><img class="badge-icon" src={{ imageUrl }}></div>
+                        <span id="badgeName">Gold Achiever</span>
+                    </div>
+                    <div style="text-align: center; opacity: 0.8;">Current Badge</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Streak Section -->
+        <div class="card">
+            <h2 style="text-align: center; margin-bottom: 20px;">Current Streak</h2>
+            <div class="streak-section">
+                <div class="streak-number" id="streakDays">
+                    <span class="fire-emoji">🔥</span>
+                    <span>24</span>
+                </div>
+                <div class="streak-label">Days in a row</div>
+                <p style="margin-top: 15px; opacity: 0.7;">Keep it up! You're on fire!</p>
+            </div>
+        </div>
+
+        <!-- Statistics Overview -->
+        <div class="card">
+            <h2 style="margin-bottom: 20px;">📈 Statistics Overview</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" style="color: #2d2d2d;" id="totalDays">90</div>
+                    <div class="stat-label">Total Days</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" style="color: #404040;" id="submittedDays">76</div>
+                    <div class="stat-label">Days Submitted</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" style="color: #707070;" id="missedDays">14</div>
+                    <div class="stat-label">Days Not Submitted</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Activity Chart -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2 style="margin-bottom: 20px;">📊 Activity Chart</h2>
+            <div class="chart-container">
+                <canvas id="activityChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Download Section -->
+        <div class="card" style="grid-column: 1 / -1;">
+            <h2 style="text-align: center; margin-bottom: 20px;">📥 Response Data</h2>
+            <div class="download-section">
+				<form id="diaryForm" action="{{ url_for('view_response') }}" method="POST">
+					<input type="hidden" name="roll_number" value="{{ roll_number }}">
+					<button type="submit" class="download-btn">
+						View Previous Responses
+					</button>
+				</form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - replace with your actual data
+        const analyticsData = {{ data | tojson }};
+
+        // Initialize progress circle
+        function initProgressCircle() {
+            const circle = document.getElementById('progressCircle');
+            const percent = analyticsData.progress;
+            const offset = 314 - (314 * percent / 100);
+            
+            circle.style.setProperty('--progress-offset', offset);
+            document.getElementById('progressPercent').textContent = percent + '%';
+        }
+
+        // Initialize chart
+        function initChart() {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: analyticsData.chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#2d2d2d',
+                                usePointStyle: true,
+                                padding: 20
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 7,
+                            ticks: {
+                                color: 'rgba(45, 45, 45, 0.8)',
+                                stepSize: 1
+                            },
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'rgba(45, 45, 45, 0.8)'
+                            },
+                            grid: {
+                                display: false
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Handle download
+        function handleDownload() {
+            // Create CSV content
+            const csvContent = `Date,Submitted,Score,Notes
+2024-01-01,Yes,85,Great progress
+2024-01-02,Yes,90,Excellent work
+2024-01-03,No,0,Missed day
+2024-01-04,Yes,88,Back on track
+2024-01-05,Yes,92,Outstanding performance`;
+
+            // Create and download file
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'analytics_responses.csv';
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update data on page
+            document.getElementById('scoreValue').textContent = analyticsData.score;
+            document.getElementById('badgeName').textContent = analyticsData.badgeName;
+            document.getElementById('streakDays').innerHTML = '<span class="fire-emoji">🔥</span><span>' + analyticsData.streakDays + '</span>';
+            document.getElementById('totalDays').textContent = analyticsData.totalDays;
+            document.getElementById('submittedDays').textContent = analyticsData.submittedDays;
+            document.getElementById('missedDays').textContent = analyticsData.missedDays;
+
+            // Initialize components
+            initProgressCircle();
+            initChart();
+
+            // Add download handler
+            document.getElementById('downloadBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                handleDownload();
+            });
+        });
+
+        // Add some interactive effects
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

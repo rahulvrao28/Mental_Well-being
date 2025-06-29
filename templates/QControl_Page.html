@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Quiz - Addition Challenge</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            padding: 20px;
+            color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quiz-container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(31, 31, 31, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            background: linear-gradient(90deg, #1f1f1f, #2a2a2a);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(-2px);
+        }
+
+        .back-arrow {
+            width: 20px;
+            height: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .badge {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(45deg, #404040, #606060);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .quiz-content {
+            padding: 48px 32px;
+            text-align: center;
+        }
+
+        .question-section {
+            margin-bottom: 40px;
+            padding: 40px 32px;
+            background: rgba(38, 38, 38, 0.8);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .question-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .question-display {
+            font-size: 48px;
+            font-weight: 700;
+            color: #f9fafb;
+            margin-bottom: 16px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 4px;
+        }
+
+        .question-label {
+            font-size: 18px;
+            color: #9ca3af;
+            margin-bottom: 32px;
+        }
+
+        .answer-section {
+            margin-bottom: 32px;
+        }
+
+        .answer-input {
+            width: 200px;
+            padding: 20px 24px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            font-size: 24px;
+            font-weight: 600;
+            background: rgba(20, 20, 20, 0.8);
+            color: #f9fafb;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+            transform: scale(1.05);
+            background: rgba(25, 25, 25, 0.9);
+        }
+
+        .answer-input::placeholder {
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #374151, #4b5563);
+            color: white;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+            border-color: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #4b5563, #6b7280);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f9fafb;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .stats-section {
+            display: none;
+        }
+
+        .feedback {
+            margin-top: 24px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feedback.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feedback.correct {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .feedback.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .quiz-container {
+                margin: 10px;
+                border-radius: 16px;
+            }
+
+            .quiz-content {
+                padding: 32px 20px;
+            }
+
+            .question-display {
+                font-size: 36px;
+                letter-spacing: 2px;
+            }
+
+            .answer-input {
+                width: 160px;
+                font-size: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <header class="header">
+            <button class="back-button" onclick="goBack()">
+                <svg class="back-arrow" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+                </svg>
+                Back
+            </button>
+            <div class="user-info">
+                <span class="user-name">{{ name }}</span>
+                <div class="badge"><img class="badge" src={{ imageUrl }}></div>
+            </div>
+        </header>
+
+        <main class="quiz-content">
+            <div class="question-section">
+                <div class="question-display" id="questionDisplay">5 + 3 = ?</div>
+                <div class="question-label">What's the answer?</div>
+                
+                <div class="answer-section">
+                    <input 
+                        type="number" 
+                        class="answer-input" 
+                        id="answerInput" 
+                        placeholder="?" 
+                        min="0" 
+                        max="18"
+                        autocomplete="off"
+                    >
+                </div>
+				<form action="{{ url_for('next_page', name=name) }}" method="POST">
+                <div class="button-group">
+                    <button class="btn btn-primary" id="submitBtn" onclick="submitAnswer()" type="submit">
+                        Check Answer
+                    </button>
+                    <button class="btn btn-secondary" id="nextBtn" onclick="generateNewQuestion()">
+                        New Question
+                    </button>
+                </div>
+				</form>
+
+                <div class="feedback" id="feedback"></div>
+            </div>
+
+
+        </main>
+    </div>
+
+    <script>
+        // Go back function
+        function goBack() {
+            // In a real app, this would navigate to the previous page
+            console.log('Going back to previous page');
+            // window.history.back(); // Uncomment this in a real application
+            alert('Back button clicked - would navigate to previous page');
+        }
+
+        let currentQuestion = {};
+        let stats = {
+            correct: 0,
+            total: 0
+        };
+
+        // Generate random single-digit addition question
+        function generateRandomQuestion() {
+            const num1 = Math.floor(Math.random() * 10); // 0-9
+            const num2 = Math.floor(Math.random() * 10); // 0-9
+            return {
+                num1: num1,
+                num2: num2,
+                answer: num1 + num2,
+                question: `${num1} + ${num2} = ?`
+            };
+        }
+
+        // Display new question
+        function generateNewQuestion() {
+            currentQuestion = generateRandomQuestion();
+            document.getElementById('questionDisplay').textContent = currentQuestion.question;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').focus();
+            hideFeedback();
+        }
+
+        // Submit answer to backend
+        function submitAnswer() {
+            const userAnswer = parseInt(document.getElementById('answerInput').value);
+            
+            if (isNaN(userAnswer)) {
+                showFeedback('Please enter a number!', 'incorrect');
+                return;
+            }
+
+            const isCorrect = userAnswer === currentQuestion.answer;
+            
+            // Prepare data for backend
+            const quizData = {
+                question: {
+                    num1: currentQuestion.num1,
+                    num2: currentQuestion.num2,
+                    correctAnswer: currentQuestion.answer
+                },
+                userAnswer: userAnswer,
+                isCorrect: isCorrect,
+                timestamp: new Date().toISOString()
+            };
+
+            // Update stats
+            stats.total++;
+            if (isCorrect) {
+                stats.correct++;
+            }
+            updateStatsDisplay();
+
+            // Show feedback
+            if (isCorrect) {
+                showFeedback('🎉 Correct! Well done!', 'correct');
+            } else {
+                showFeedback(`❌ Wrong! The answer is ${currentQuestion.answer}`, 'incorrect');
+            }
+
+            // Send to backend
+            submitToBackend(quizData);
+
+            // Auto-generate new question after 2 seconds
+            setTimeout(() => {
+                generateNewQuestion();
+            }, 2000);
+        }
+
+        // Submit quiz data to backend
+        function submitToBackend(data) {
+            console.log('Submitting quiz data to backend:', data);
+            
+            /*
+            // Uncomment this for real backend integration:
+            fetch('/api/quiz-submission', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Quiz submission successful:', result);
+            })
+            .catch(error => {
+                console.error('Error submitting quiz:', error);
+            });
+            */
+        }
+
+        // Show feedback message
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedback');
+            feedback.textContent = message;
+            feedback.className = `feedback ${type} show`;
+        }
+
+        // Hide feedback message
+        function hideFeedback() {
+            const feedback = document.getElementById('feedback');
+            feedback.className = 'feedback';
+        }
+
+        // Update statistics (for backend tracking only)
+        function updateStatsDisplay() {
+            // Stats are tracked internally but not displayed
+            // Data is sent to backend for tracking
+        }
+
+        // Handle Enter key press
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                submitAnswer();
+            }
+        });
+
+        // Add number input validation
+        document.getElementById('answerInput').addEventListener('input', function(e) {
+            // Remove any non-numeric characters
+            this.value = this.value.replace(/[^0-9]/g, '');
+            
+            // Limit to reasonable range (0-18 for single digit addition)
+            if (parseInt(this.value) > 18) {
+                this.value = '18';
+            }
+        });
+
+        // Initialize with first question
+        generateNewQuestion();
+
+        // Add some visual feedback for interactions
+        document.getElementById('answerInput').addEventListener('focus', function() {
+            this.parentElement.style.transform = 'scale(1.02)';
+        });
+
+        document.getElementById('answerInput').addEventListener('blur', function() {
+            this.parentElement.style.transform = 'scale(1)';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Progress Diary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            padding: 20px;
+            color: #e5e7eb;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(31, 31, 31, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 32px;
+            background: linear-gradient(90deg, #1f1f1f, #2a2a2a);
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(-2px);
+        }
+
+        .back-arrow {
+            width: 20px;
+            height: 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .badge {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(45deg, #404040, #606060);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+
+        .user-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .main-content {
+            padding: 40px 32px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ffffff, #d1d5db);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: #9ca3af;
+            font-size: 16px;
+        }
+
+        .question-section {
+            margin-bottom: 48px;
+            padding: 32px;
+            background: rgba(38, 38, 38, 0.8);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .question-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .question-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #f9fafb;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .question-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(45deg, #4a4a4a, #6a6a6a);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .answers-grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            font-size: 16px;
+            background: rgba(20, 20, 20, 0.8);
+            color: #f9fafb;
+            transition: all 0.3s ease;
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+            transform: scale(1.02);
+            background: rgba(25, 25, 25, 0.9);
+        }
+
+        .answer-input::placeholder {
+            color: #6b7280;
+        }
+
+        .submit-section {
+            text-align: center;
+            margin-top: 48px;
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, #374151, #4b5563);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 18px 48px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+            border-color: rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #4b5563, #6b7280);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+		
+		.flash-message {
+		  display: flex;
+		  justify-content: center;
+		  align-items: center;
+		}
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 16px;
+            }
+
+            .header {
+                padding: 20px 24px;
+            }
+
+            .main-content {
+                padding: 32px 24px;
+            }
+
+            .question-section {
+                padding: 24px 20px;
+            }
+
+            .page-title h1 {
+                font-size: 28px;
+            }
+
+            .question-title {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <button class="back-button" onclick="goBack()">
+                <svg class="back-arrow" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+                </svg>
+                Back
+            </button>
+            <div class="user-info">
+                <span class="user-name">{{ name }}</span>
+                <div class="badge"><img class="badge" src={{ imageUrl }}></div>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="page-title">
+                <h1>Daily Progress Diary</h1>
+                <p>Reflect on your day and track your growth</p>
+            </div>
+
+            <form id="diaryForm" action="{{ url_for('submit_responses') }}" method="POST">
+				<input type="hidden" name="name" value="{{ name }}">
+				<input type="hidden" name="roll_number" value="{{ request.args.get('roll_number') }}">
+                <div class="question-section">
+                    <h2 class="question-title">
+                        <div class="question-icon">🎯</div>
+                        What do you want to do today?
+                    </h2>
+                    <div class="answers-grid">
+                        <textarea class="answer-input" name="goals_1" placeholder="First goal or task for today..." required></textarea>
+                        <textarea class="answer-input" name="goals_2" placeholder="Second goal or task for today..." required></textarea>
+                        <textarea class="answer-input" name="goals_3" placeholder="Third goal or task for today..." required></textarea>
+                    </div>
+                </div>
+
+                <div class="question-section">
+                    <h2 class="question-title">
+                        <div class="question-icon">🙏</div>
+                        What are you grateful for today?
+                    </h2>
+                    <div class="answers-grid">
+                        <textarea class="answer-input" name="grateful_1" placeholder="Something you're grateful for..." required></textarea>
+                        <textarea class="answer-input" name="grateful_2" placeholder="Another thing you appreciate..." required></textarea>
+                        <textarea class="answer-input" name="grateful_3" placeholder="One more thing that brings you joy..." required></textarea>
+                    </div>
+                </div>
+
+                <div class="question-section">
+                    <h2 class="question-title">
+                        <div class="question-icon">🏆</div>
+                        What are your small wins today?
+                    </h2>
+                    <div class="answers-grid">
+                        <textarea class="answer-input" name="wins_1" placeholder="A small victory or accomplishment..." required></textarea>
+                        <textarea class="answer-input" name="wins_2" placeholder="Another win, no matter how small..." required></textarea>
+                        <textarea class="answer-input" name="wins_3" placeholder="One more achievement to celebrate..." required></textarea>
+                    </div>
+                </div>
+
+                <div class="submit-section">
+                    <button type="submit" class="submit-button">Save My Progress</button>
+                </div>
+            </form>
+			{% with messages = get_flashed_messages(with_categories=true) %}
+			{% if messages %}
+				{% for category, message in messages %}
+					<div class="flash-message">{{ message }}</div>
+			{% endfor %}
+			{% endif %}
+		{% endwith %}
+        </main>
+    </div>
+
+    <script>
+        function goBack() {
+            // In a real app, this would navigate to the previous page
+            console.log('Going back to previous page');
+            // window.history.back(); // Uncomment this in a real application
+            alert('Back button clicked - would navigate to previous page');
+        }
+
+        
+
+        function submitToBackend(data) {
+            // Simulate backend submission
+            console.log('Submitting to backend...', data);
+            
+            // Show success message
+            const button = document.querySelector('.submit-button');
+            const originalText = button.textContent;
+            
+            button.textContent = 'Saving...';
+            button.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+            
+            setTimeout(() => {
+                button.textContent = 'Saved Successfully! ✓';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'linear-gradient(135deg, #374151, #4b5563)';
+                }, 2000);
+            }, 1000);
+
+            /*
+            // Uncomment this for real backend integration:
+            fetch('/api/diary-entry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log('Success:', result);
+                // Handle success (show message, redirect, etc.)
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Handle error
+            });
+            */
+        }
+
+        // Add smooth animations when inputs are focused
+        document.querySelectorAll('.answer-input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

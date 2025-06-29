@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login Page</title>
+  <style>
+    /* General Reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(to bottom right, #e0f7fa, #fbe9e7); /* light blue + warm peach */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .login-container {
+      background-color: #ffffffcc;
+      padding: 2rem 3rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 25px rgba(0, 123, 255, 0.1);
+      text-align: center;
+    }
+
+    .login-container h2 {
+      margin-bottom: 1.5rem;
+      color: #0277bd;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 0.5rem;
+      color: #37474f;
+      text-align: left;
+    }
+
+    input[type="text"] {
+      padding: 0.75rem;
+      border: 1px solid #b0bec5;
+      border-radius: 10px;
+      margin-bottom: 1.5rem;
+      font-size: 1rem;
+      transition: border 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #0288d1;
+      outline: none;
+    }
+
+    button {
+      background-color: #0288d1;
+      color: white;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #0277bd;
+    }
+	.flash-message {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+    .flash-message.success {
+      color: green;
+    }
+    .flash-message.error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>Welcome</h2>
+    <form method="POST">
+      <input type="text" id="userid" name="roll_number" placeholder="Enter your Roll Number" required />
+      <button type="submit">Login</button>
+    </form>
+	{% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+</body>
+</html>

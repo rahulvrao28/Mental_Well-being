@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaderboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to right, #e0f7fa, #ffffff);
+            margin: 0;
+            padding: 40px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background-color: #ffffff;
+            padding: 30px 40px;
+            border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #007acc;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #e6f7ff;
+            color: #005c99;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f1f9ff;
+        }
+
+        .rank {
+            font-weight: bold;
+            color: #007acc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🏆 Daily Streak Leaderboard</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Roll Number</th>
+                    <th>Club</th>
+                    <th>Max Streak Days</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in leaders %}
+				<tr>
+					<td class="rank">{{ loop.index }}</td>  <!-- loop.index gives 1-based index -->
+					<td>{{ user.name }}</td>
+					<td>{{ user.roll_number }}</td>
+					<td>{{ user.club }}</td>
+					<td>{{ user.streak_days }}</td>
+				</tr>
+				{% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
